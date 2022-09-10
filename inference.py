@@ -24,6 +24,7 @@ if uploaded_img is not None:
 
     # run the uploaded image through model to see how it performs on custom pretrained weights
     results = model(img)
+    results1 = model(img) # just checking deployment issue
 
     st.write(results)
     fig, ax = plt.subplots(figsize=(16, 12))
