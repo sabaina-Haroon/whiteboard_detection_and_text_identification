@@ -10,7 +10,7 @@ st.header('Upload Image from drive for whiteboard detection')
 im = 'https://ultralytics.com/images/zidane.jpg'
 @st.cache
 def load_model():
-    _model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+    _model = torch.hub.load('ultralytics/yolov5','custom' , path='yolov5m_Objects365.pt')
     return _model
 
 
