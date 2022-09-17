@@ -5,7 +5,7 @@ from PIL import Image
 import easyocr
 import matplotlib
 import numpy as np
-matplotlib.use('tkagg')
+# matplotlib.use('tkagg')
 
 st.title('Whiteboard Detection and Text Identification')
 
