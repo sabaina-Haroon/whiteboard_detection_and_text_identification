@@ -30,6 +30,19 @@ reader = load_ocrmodel()
 uploaded_img = st.file_uploader('Upload Image')
 if uploaded_img is not None:
     img = Image.open(uploaded_img)
+
+    # As the model is crashing over big Images from mobile devices, resizing for memory optimization
+    while img.size[0] > 640 or img.size[1] > 640:
+        # basewidth = 640
+        # wpercent = (basewidth / float(img.size[0]))
+        # hsize = int((float(img.size[1]) * float(wpercent)))
+        # img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+
+        # To be done , Improve this by adding aspect ratio resizing
+        img = img.resize((int(img.size[0]/2), int(img.size[1]/2)), Image.ANTIALIAS)
+
+
+
     fig = plt.figure()
     plt.imshow(img)
     st.pyplot(fig)
