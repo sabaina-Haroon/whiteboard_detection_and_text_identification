@@ -20,7 +20,7 @@ def load_model():
 
 @st.cache
 def load_ocrmodel():
-    _reader = easyocr.Reader(['en'])
+    _reader = easyocr.Reader(['en'], model_storage_directory='./ocr_models', detector='DB', recognizer='Transformer')
     return _reader
 
 model = load_model()
