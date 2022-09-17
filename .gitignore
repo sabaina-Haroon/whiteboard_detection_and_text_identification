@@ -1,0 +1,8 @@
+Whiteboards-9/
+Whiteboards-10/
+Whiteboards-11/
+.idea/inspectionProfiles/profiles_settings.xml
+*.xml
+*.iml
+yolov5/
+download_data.ipynb
