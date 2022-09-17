@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import torch
 from PIL import Image
+import cv2
 import easyocr
 import matplotlib
 import numpy as np
@@ -30,18 +31,14 @@ reader = load_ocrmodel()
 uploaded_img = st.file_uploader('Upload Image')
 if uploaded_img is not None:
     img = Image.open(uploaded_img)
-
+    w = img.size[0]
+    h = img.size[1]
     # As the model is crashing over big Images from mobile devices, resizing for memory optimization
-    while img.size[0] > 640 or img.size[1] > 640:
-        # basewidth = 640
-        # wpercent = (basewidth / float(img.size[0]))
-        # hsize = int((float(img.size[1]) * float(wpercent)))
-        # img = img.resize((basewidth, hsize), Image.ANTIALIAS)
-
+    while w > 640 and h > 640:
         # To be done , Improve this by adding aspect ratio resizing
-        img = img.resize((int(img.size[0]/2), int(img.size[1]/2)), Image.ANTIALIAS)
-
-
+        img = cv2.resize(np.array(img), (int(w/2), int(h/2)), interpolation=cv2.INTER_AREA)
+        w = img.shape[0]
+        h = img.shape[1]
 
     fig = plt.figure()
     plt.imshow(img)
