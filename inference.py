@@ -30,8 +30,11 @@ def plot_imgs(images, is_binary=False):
 
 
 @st.cache
-def load_model():
-    _model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5m_Objects365.pt')
+def load_model(model_type='Pretrained'):
+    if model_type == 'Pretrained':
+        _model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5m_Objects365.pt')
+    # elif model_type == 'Transfer Learning':
+    #     _model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
     return _model
 
 
@@ -76,6 +79,8 @@ def load_image(uploaded_img_):
     return img_
 
 
+# model_type = st.selectbox('Select the model', ['Pretrained', 'Transfer Learning'])
+
 model = load_model()
 reader_easyocr = load_ocrmodel()
 # st.header('Upload Image for whiteboard detection')
@@ -116,18 +121,36 @@ if uploaded_img is not None:
     st.markdown('## <b><u><font color="Green">Text Identification</font></b></u>', unsafe_allow_html=True)
     tab1, tab2, tab3 = st.tabs(["Pytesseract", "EasyOCR", "EasyOCR + Pytesseract"])
     with tab1:
+        st.markdown('###### <font color="Red">Extracts text using pytesseract</font>', unsafe_allow_html=True)
+        st.markdown('<b><font color="Red">Limitations:</b> </font>It requires the image to be processed and binarized '
+                    'before text identification. Whereas Binarization step is specific to the environment in '
+                    'which the image is captured and difficult to generalize.',
+                    unsafe_allow_html=True)
+        st.markdown('<b><font color="Red">Advantage:</b></font> Light-weight compared to easyocr and supports '
+                    'multiple languages at once.', unsafe_allow_html=True)
         binary_imgs, txt_pytesseract = process_tesseract(input_imgs)
         st.markdown('#### <u>Processed Images as Input to pytesseract</u>', unsafe_allow_html=True)
         st.pyplot(plot_imgs(binary_imgs, is_binary=True))
         st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
         c = [st.write(i) for i in txt_pytesseract]
     with tab2:
+        st.markdown('###### <font color="Red">Extracts text using Easyocr.</font>', unsafe_allow_html=True)
+        st.markdown('<b><font color="Red">Limitations:</b> </font>It requires language type before extracting text. '
+                    'It supports around 80 languages, whereas models for most languages are computationally expensive '
+                    'to maintain in deployment.',
+                    unsafe_allow_html=True)
+        st.markdown('<b><font color="Red">Advantage:</b></font> Encoder-Decoder+RCNN architecture takes care of '
+                    'processing the image before detection. Bounding Boxes provided for text detection  can be used '
+                    'with pytesseract, as an alternative to East Detector.', unsafe_allow_html=True)
         bb_imgs, txt_easyocr = process_easyocr(input_imgs)
         st.markdown('#### <u>Text Detection on Input to Easyocr</u>', unsafe_allow_html=True)
         st.pyplot(plot_imgs(bb_imgs, is_binary=True))
         st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
         c = [st.write(i) for i in txt_easyocr]
     with tab3:
+        st.markdown('<font color="Red">This method uses text detection capability from EasyOCR. Based on the bounding '
+                    'boxes marked by EasyOCR, we individually apply pytesseract to subimages. .</font>',
+                    unsafe_allow_html=True)
         method1, method2 = st.tabs(['Preprocessing Method 1', 'Preprocessing Method 2'])
         with method1:
             binary_imgs, txt = process_easytesseract(input_imgs, preprocessing=0)
