@@ -7,8 +7,7 @@ import torch
 from util import *
 
 st.set_page_config(
-    page_title='Whiteboard Detection and Text Identification',
-    layout="wide"
+    page_title='Whiteboard Detection and Text Identification'
 )
 st.title("Whiteboard Detection and Text Identification")
 
