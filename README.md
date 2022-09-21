@@ -51,3 +51,70 @@ pip install -r requirements.txt  # install
 In the terminal, type command;
 
     streamlit run inference.py
+
+
+# How it works
+<a name="TOP"></a>
+
+<b> <span style="color: Green; "> Pipeline </span> </b>
+
+1. App allows user to upload Image from local Drive
+2. Uploaded Image is fed to yolov5 detection custom model trained on Object365 dataset.
+3. Detected regions are cropped and individually are fed to text extraction pipeline
+4. Text Extraction pipeline consists of three options, EasyOCR , Pytesseract and Ensemble of both methods
+
+
+<b> <span style="color: Green; "> Limitations </span> </b>
+
+
+This app has multiple limitations due to time constraint of implementation. These limitations can be promising next steps for further exploration.
+
+-   Prebuilt OCR models for instance the ones used in this app, work well with typed fonts but struggle hard for detection on handwritten texts. Whiteboard images would mostly consist of handwritten text, which gets very hard for the app to identify. 
+- EasyOCR performs well compared to pytesseract but it is computationally expensive and currently for the app it only works for englsh language, keeping in mind resource limit for deployment.
+- Pytesseract is light-weight for deployment, but struggles with lightening conditions in which image is taken and greatly depends upon the preprocessing steps applied to the input image.
+
+<b> <span style="color: Green; "> Looking forward </span> </b>
+
+Specific to whiteboard detection , it could be beneficial to gather handwritten dataset based on <b>alphabets</b> of multiple languages, and train model individually for all the characters. 
+Spacial Transformer models can be trained and make part of the pipeline for further improvements. 
+
+# Insights
+<a name="TOP"></a>
+
+<b> <span style="color: Green; "> Example Image for CV2 Warping applied on input image to pytesseract </span> </b>
+
+![img.png](img.png)
+![img_1.png](img_1.png)
+
+<b> <span style="color: Green; "> Example of Pytesseract Result on Full Image </span> </b>
+
+![img_2.png](img_2.png)
+
+### Output from EasyOCR
+"Recalcitrant adj;' 'Stubborn lebellious obstinate, disobedtens , anbnjns; agrecable; Compl; ali Obadient: unwty Recaittrant:"
+
+### Output from pytesseract 
+=} Recalectrant,
+i ddj- Stubborn. sebetious, obstinate , disobea,.
+
+Antonyms, agreeable, Compliant, obedient Unruly
+
+Recaigitvant
+
+### Output when Image cropped from easyOCR boundingbox is fed to Pytesseract
+
+![img_3.png](img_3.png)
+
+Recalcitrant,
+
+Adj: ‘Stubborn sebelious, obstinate , disobedi.
+
+Antonyms: agreeable; Compliant, obedient
+
+Unruly
+
+Recalcitrant
+
+
+
+
