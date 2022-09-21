@@ -5,3 +5,4 @@ tesseract-ocr-por
 tesseract-ocr-enm
 tesseract-ocr-chi-sim
 tesseract-ocr-chi-tra
+tesseract-ocr-urd
