@@ -10,7 +10,7 @@ st.set_page_config(
     page_title='Whiteboard Detection and Text Identification'
 )
 st.title("Whiteboard Detection and Text Identification")
-
+st.write('This app accpets an uploaded image, runs it through Yolov5 object detector, and extracts text using different listed methods.')
 
 def plot_imgs(images, is_binary=False):
     fig_ = plt.figure(figsize=(20, 10))
@@ -33,7 +33,7 @@ def load_model(model_type='Pretrained'):
     if model_type == 'Pretrained':
         _model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5m_Objects365.pt')
     # elif model_type == 'Transfer Learning':
-    #     _model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+        # _model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
     return _model
 
 
@@ -83,11 +83,12 @@ def load_image(uploaded_img_):
 model = load_model()
 reader_easyocr = load_ocrmodel()
 # st.header('Upload Image for whiteboard detection')
-st.markdown('## <b><u><font color="Green">Upload Image for whiteboard detection </font></b></u>',
+st.markdown('## <b><u><font color="Green">Step 1. Upload Image for whiteboard detection </font></b></u>',
             unsafe_allow_html=True)
 uploaded_img = st.file_uploader('Upload Image')
 if uploaded_img is not None:
-    st.markdown('## <b><u><font color="Green">Whiteboard Detection </font></b></u>', unsafe_allow_html=True)
+    st.markdown('## <b><u><font color="Green">Step 2. Whiteboard Detection </font></b></u>', unsafe_allow_html=True)
+    st.info('App checks if model has detected Whiteboard or not.')
     img = load_image(uploaded_img)
     img = image_resize(img)
 
@@ -107,7 +108,8 @@ if uploaded_img is not None:
 
     input_imgs = []
     if len(pred_annot) > 0:
-        st.markdown('### <u> Region of Interest </u>', unsafe_allow_html=True)
+        st.markdown('### <u>Step 3. Region of Interest </u>', unsafe_allow_html=True)
+        st.info('This will show detected images cropped from Raw uploaded image.')
         # clipped_images = crop_image(np.array(img), pred_annot)
         clipped_images = crop_image(img, pred_annot)
         st.pyplot(plot_imgs(clipped_images))
@@ -117,7 +119,8 @@ if uploaded_img is not None:
                     "detected it, It might be because the image is relatively zoomed-in. Therefore, In this case, "
                     "we will pass the entire image to the OCR algorithm.</font></center>", unsafe_allow_html=True)
         input_imgs = [img]
-    st.markdown('## <b><u><font color="Green">Text Identification</font></b></u>', unsafe_allow_html=True)
+    st.markdown('## <b><u><font color="Green">Final. Text Identification</font></b></u>', unsafe_allow_html=True)
+    st.info('There are four different methods provided below for text identification. Please click on following tabs to see results.')
     tab1, tab2, tab3 = st.tabs(["Pytesseract", "EasyOCR", "EasyOCR + Pytesseract"])
     with tab1:
         st.markdown('###### <font color="Red">Extracts text using pytesseract</font>', unsafe_allow_html=True)
@@ -131,6 +134,7 @@ if uploaded_img is not None:
         st.markdown('#### <u>Processed Images as Input to pytesseract</u>', unsafe_allow_html=True)
         st.pyplot(plot_imgs(binary_imgs, is_binary=True))
         st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
+        st.info('Final Output')
         c = [st.write(i) for i in txt_pytesseract]
     with tab2:
         st.markdown('###### <font color="Red">Extracts text using Easyocr.</font>', unsafe_allow_html=True)
@@ -145,6 +149,7 @@ if uploaded_img is not None:
         st.markdown('#### <u>Text Detection on Input to Easyocr</u>', unsafe_allow_html=True)
         st.pyplot(plot_imgs(bb_imgs, is_binary=True))
         st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
+        st.info('Final Output')
         c = [st.write(i) for i in txt_easyocr]
     with tab3:
         st.markdown('<font color="Red">This method uses text detection capability from EasyOCR. Based on the bounding '
@@ -157,6 +162,7 @@ if uploaded_img is not None:
             for binary_img in binary_imgs:
                 st.pyplot(plot_imgs(binary_img, is_binary=True))
             st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
+            st.info('Final Output')
             st.write(txt)
         with method2:
             binary_imgs, txt = process_easytesseract(input_imgs, preprocessing=1)
@@ -164,4 +170,5 @@ if uploaded_img is not None:
             for binary_img in binary_imgs:
                 st.pyplot(plot_imgs(binary_img, is_binary=True))
             st.markdown('#### <u>Text Extraction</u>', unsafe_allow_html=True)
+            st.info('Final Output')
             st.write(txt)
